@@ -37,6 +37,22 @@ public class GroupRevealManager : MonoBehaviour
     public float OffScreenDistance = 2000f;
     public float CompleteBounceDelay = 0.05f;
     
+    [Header("Startup Animation Targets")]
+    public RectTransform TitleText;
+    public RectTransform TitleFinalAnchor;
+    public float TitleFlyDuration = 0.8f;
+    public Ease TitleFlyEase = Ease.OutBack;
+
+    public RectTransform RevealButtonRect;
+    public RectTransform RevealButtonFinalAnchor;
+    public float RevealButtonFlyDuration = 0.8f;
+    public Ease RevealButtonFlyEase = Ease.OutBack;
+
+    [Header("Startup Timing")]
+    public float StartupDelay = 1f;       // delay before any motion starts
+    public float StartupStagger = 0.2f;     // offset between title & button
+
+    
     [Header("Fireworks Settings")]
     public GameObject FireworksParticlePrefab;
     public int FireworksCount = 10;
@@ -69,6 +85,7 @@ public class GroupRevealManager : MonoBehaviour
         HideAllPanels();
         SetupRevealButton();
         InitializeLogoDisplay();
+        AnimateStartupUI();
     }
 
     public void RevealNextStudent()
@@ -141,7 +158,28 @@ public class GroupRevealManager : MonoBehaviour
     {
         return string.IsNullOrWhiteSpace(raw) ? raw : raw.Replace("_", " ").Trim();
     }
-    
+
+    private void AnimateStartupUI()
+    {
+        if (TitleText != null && TitleFinalAnchor != null)
+        {
+            Vector2 target = TitleFinalAnchor.anchoredPosition;
+            TitleText.DOKill();
+            TitleText.DOAnchorPos(target, TitleFlyDuration)
+                .SetEase(TitleFlyEase)
+                .SetDelay(StartupDelay); // <-- start after global delay
+        }
+
+        if (RevealButtonRect != null && RevealButtonFinalAnchor != null)
+        {
+            Vector2 target = RevealButtonFinalAnchor.anchoredPosition;
+            RevealButtonRect.DOKill();
+            RevealButtonRect.DOAnchorPos(target, RevealButtonFlyDuration)
+                .SetEase(RevealButtonFlyEase)
+                .SetDelay(StartupDelay + StartupStagger); // <-- starts later
+        }
+    }
+
     private void InitializeRevealState()
     {
         currentStudentIndex = 0;

@@ -530,7 +530,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -53.899994}
+  m_AnchoredPosition: {x: -1266.3, y: -53.899994}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350362988
@@ -687,8 +687,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2fde7b4f53c14f54fa8a0fc014cb7412, type: 3}
   - {fileID: 21300000, guid: 20eaedeabab04ed45a2c4c95b4efabcf, type: 3}
   - {fileID: 21300000, guid: 8394d788a55b3aa4ba9a4b002ce60cd2, type: 3}
-  - {fileID: 21300000, guid: 8394d788a55b3aa4ba9a4b002ce60cd2, type: 3}
-  - {fileID: 21300000, guid: 8394d788a55b3aa4ba9a4b002ce60cd2, type: 3}
+  - {fileID: -510696210472818371, guid: 17cc90e98cc21f743b66ec3cbc5ff17f, type: 3}
+  - {fileID: 21300000, guid: 72fa737fbb614e4499645449762d4f57, type: 3}
   CsvFileName: students.csv
   ColumnsPerRow: 4
   CompleteBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
@@ -701,6 +701,16 @@ MonoBehaviour:
   PanelRotationAmount: 720
   OffScreenDistance: 2000
   CompleteBounceDelay: 0.05
+  TitleText: {fileID: 350362987}
+  TitleFinalAnchor: {fileID: 2042741869}
+  TitleFlyDuration: 0.8
+  TitleFlyEase: 27
+  RevealButtonRect: {fileID: 1296493089}
+  RevealButtonFinalAnchor: {fileID: 594257278}
+  RevealButtonFlyDuration: 0.8
+  RevealButtonFlyEase: 27
+  StartupDelay: 1
+  StartupStagger: 0.2
   FireworksParticlePrefab: {fileID: 307613427636874791, guid: 41e14b4ca45741041a1a6b5e9a90d85f, type: 3}
   FireworksCount: 20
   FireworksSpawnDelay: 0.2
@@ -954,6 +964,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1046421939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &594257277
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594257278}
+  m_Layer: 5
+  m_Name: GoButtonFinalAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &594257278
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594257277}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 999966530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 64.98001}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,7 +1227,7 @@ GameObject:
   - component: {fileID: 895352038}
   - component: {fileID: 895352037}
   m_Layer: 5
-  m_Name: Button-FireWork
+  m_Name: Button-FireWorkHidden
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1311,7 +1356,7 @@ GameObject:
   m_Component:
   - component: {fileID: 999966530}
   m_Layer: 5
-  m_Name: UIRig
+  m_Name: UIShakeRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1334,6 +1379,8 @@ RectTransform:
   - {fileID: 350362987}
   - {fileID: 263517433}
   - {fileID: 895352036}
+  - {fileID: 2042741869}
+  - {fileID: 594257278}
   m_Father: {fileID: 167804555}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1352,7 +1399,7 @@ GameObject:
   - component: {fileID: 1046421939}
   - component: {fileID: 1046421938}
   m_Layer: 0
-  m_Name: CameraRig
+  m_Name: CameraShakeRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1376,10 +1423,10 @@ MonoBehaviour:
   Vibrato: 32
   Randomness: 90
   FadeOut: 1
-  WorldPosStrength: {x: 0.45, y: 0.45, z: 0}
-  WorldRotZ: 8
-  UIPosStrength: {x: 45, y: 45}
-  UIRotZ: 8
+  WorldPosStrength: {x: 0.25, y: 0.25, z: 0}
+  WorldRotZ: 4
+  UIPosStrength: {x: 25, y: 25}
+  UIRotZ: 4
 --- !u!4 &1046421939
 Transform:
   m_ObjectHideFlags: 0
@@ -1705,7 +1752,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 64.98001}
+  m_AnchoredPosition: {x: 1126.91, y: 64.98001}
   m_SizeDelta: {x: 250, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1296493090
@@ -2520,6 +2567,41 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2042741868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2042741869}
+  m_Layer: 5
+  m_Name: TitleFinalAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2042741869
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042741868}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 999966530}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -53.89999}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2097259756
 GameObject:
   m_ObjectHideFlags: 0

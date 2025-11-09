@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3f26a8832af64bf4f87e18e1d37ebe3c
+guid: 72fa737fbb614e4499645449762d4f57
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -752550656638304142
-    second: GullibleSquirrels_0
+      213: 8789261529960761435
+    second: Existential Axolotls_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GullibleSquirrels_0
+      name: Existential Axolotls_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 270469b3a276e85f0800000000000000
-      internalID: -752550656638304142
+      spriteID: b5841534bcab9f970800000000000000
+      internalID: 8789261529960761435
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GullibleSquirrels_0: -752550656638304142
+      Existential Axolotls_0: 8789261529960761435
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
