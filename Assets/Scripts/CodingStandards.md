@@ -1,0 +1,16 @@
+- Public variables/properties: PascalCase
+- Private fields: camelCase
+- No underscores in names
+- No abbreviations (use full descriptive names)
+- No single-line if statements
+- No ternary operators (always replace them with if/else)
+- Extract complex conditionals into named methods
+- Methods should do one thing
+- No magic numbers
+- If you see comments, replace with a method call so it's self-documenting
+- Order methods by access level (public, private, protected)
+- Enum types should always have Type at the end of their name (e.g. ColorType instead of Color)
+- Boolean variables should be named with a verb (e.g. isEnabled instead of enabled), prefer use of is, has, can, should
+- Always put if/else statements on a new line and surround them with braces
+- Don't use private [SerializeField]s.  Make them public and use the inspector to set them.
+- When converting private SerializedFields to public, make sure to capitalize the first letter of the variable name.
