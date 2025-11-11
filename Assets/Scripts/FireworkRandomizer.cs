@@ -14,17 +14,18 @@ public class FireworkRandomizer : MonoBehaviour
     public float scaleMin = 0.8f;
     public float scaleMax = 1.3f;
 
-    [HideInInspector] public float chosenScale; // store chosen scale
+    [HideInInspector] public float chosenScale;
 
     void OnEnable()
     {
-        var ps = GetComponent<ParticleSystem>();
-        if (ps == null) return;
+        ParticleSystem ps = GetComponent<ParticleSystem>();
+        if (ps == null) 
+            return;
 
-        var main = ps.main;
+        ParticleSystem.MainModule main = ps.main;
         main.startSpeed = Random.Range(startSpeedMin, startSpeedMax);
 
-        var shape = ps.shape;
+        ParticleSystem.ShapeModule shape = ps.shape;
         shape.radius = Random.Range(radiusMin, radiusMax);
 
         chosenScale = Random.Range(scaleMin, scaleMax);

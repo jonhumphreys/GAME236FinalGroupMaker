@@ -28,8 +28,7 @@ public class CycleSpritesOnCtrlE : MonoBehaviour
                 break;
             }
         }
-
-        // Start on the first sprite
+        
         spriteRenderer.sprite = Sprites[0];
         currentIndex = 0;
     }
@@ -37,7 +36,8 @@ public class CycleSpritesOnCtrlE : MonoBehaviour
     private void Update()
     {
         var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        if (keyboard == null) 
+            return;
 
         bool ctrlHeld = keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed;
         bool ePressedThisFrame = keyboard.eKey.wasPressedThisFrame;
@@ -50,7 +50,8 @@ public class CycleSpritesOnCtrlE : MonoBehaviour
 
     private void AdvanceSprite()
     {
-        if (Sprites == null || Sprites.Length < 5) return;
+        if (Sprites == null || Sprites.Length < 5) 
+            return;
 
         currentIndex = (currentIndex + 1) % 5;
         var nextSprite = Sprites[currentIndex];

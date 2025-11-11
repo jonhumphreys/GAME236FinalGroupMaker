@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
-public class GroupRevealManager : MonoBehaviour
+public class GroupRevealer : MonoBehaviour
 {
     [Header("UI References")]
     public Transform PanelContainer;
@@ -49,9 +49,8 @@ public class GroupRevealManager : MonoBehaviour
     public Ease RevealButtonFlyEase = Ease.OutBack;
 
     [Header("Startup Timing")]
-    public float StartupDelay = 1f;       // delay before any motion starts
-    public float StartupStagger = 0.2f;     // offset between title & button
-
+    public float StartupDelay = 1f;       
+    public float StartupStagger = 0.2f;     
     
     [Header("Fireworks Settings")]
     public GameObject FireworksParticlePrefab;
@@ -132,14 +131,20 @@ public class GroupRevealManager : MonoBehaviour
     
     public void OnLogoRevealed(int groupNumber, Sprite logoSprite)
     {
-        if (!IsValidGroupNumber(groupNumber)) return;
+        if (!IsValidGroupNumber(groupNumber)) 
+            return;
 
         DisplayLogoOnPanel(groupNumber, logoSprite);
 
         var panel = GetGroupPanel(groupNumber);
-        string teamName = logoSprite != null ? PrettyName(logoSprite.name)
-            : $"Group {groupNumber}";
-        panel.SetGroupTitle(teamName); // <- update the panel’s title to the team name
+        
+        string teamName;
+        if (logoSprite != null)
+            teamName = PrettyName(logoSprite.name);
+        else
+            teamName = $"Group {groupNumber}";
+        
+        panel.SetGroupTitle(teamName);
     }
 
     public void ResetReveal()
@@ -153,8 +158,7 @@ public class GroupRevealManager : MonoBehaviour
         UpdateRevealButtonText(InitialButtonText);
         Debug.Log("Reveal reset");
     }
-
-    // Optional helper to clean asset names like "Gullible_Squirrels"
+    
     private string PrettyName(string raw)
     {
         return string.IsNullOrWhiteSpace(raw) ? raw : raw.Replace("_", " ").Trim();
@@ -168,7 +172,7 @@ public class GroupRevealManager : MonoBehaviour
             TitleText.DOKill();
             TitleText.DOAnchorPos(target, TitleFlyDuration)
                 .SetEase(TitleFlyEase)
-                .SetDelay(StartupDelay); // <-- start after global delay
+                .SetDelay(StartupDelay);
         }
 
         if (RevealButtonRect != null && RevealButtonFinalAnchor != null)
@@ -177,7 +181,7 @@ public class GroupRevealManager : MonoBehaviour
             RevealButtonRect.DOKill();
             RevealButtonRect.DOAnchorPos(target, RevealButtonFlyDuration)
                 .SetEase(RevealButtonFlyEase)
-                .SetDelay(StartupDelay + StartupStagger); // <-- starts later
+                .SetDelay(StartupDelay + StartupStagger); 
         }
     }
 
@@ -221,7 +225,7 @@ public class GroupRevealManager : MonoBehaviour
     private void CalculateMaxStudentsPerGroup()
     {
         maxStudentsPerGroup = 0;
-        foreach (var group in studentGroups)
+        foreach (StudentGroup group in studentGroups)
         {
             if (group.StudentCount > maxStudentsPerGroup)
             {
@@ -291,10 +295,9 @@ public class GroupRevealManager : MonoBehaviour
     {
         panelOriginalPositions.Clear();
         
-        // Force layout update to ensure positions are set
         Canvas.ForceUpdateCanvases();
         
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             if (panel != null)
             {
@@ -309,7 +312,7 @@ public class GroupRevealManager : MonoBehaviour
 
     private void HideAllPanels()
     {
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             HidePanel(panel);
         }
@@ -320,7 +323,7 @@ public class GroupRevealManager : MonoBehaviour
         DisableGridLayout();
         
         int index = 0;
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             ShowPanelWithAnimation(panel, index);
             index++;
@@ -376,10 +379,12 @@ public class GroupRevealManager : MonoBehaviour
 
     private void ShowPanelWithAnimation(GroupPanelUI panel, int panelIndex)
     {
-        if (panel == null) return;
+        if (panel == null) 
+            return;
 
         RectTransform rectTransform = GetPanelRectTransform(panel);
-        if (rectTransform == null) return;
+        if (rectTransform == null)
+            return;
 
         ShowPanel(panel);
         SetupPanelForAnimation(rectTransform, panelIndex);
@@ -455,7 +460,7 @@ public class GroupRevealManager : MonoBehaviour
         EnableGridLayout();
         
         int index = 0;
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             if (panel != null && index < panelOriginalPositions.Count)
             {
@@ -548,7 +553,7 @@ public class GroupRevealManager : MonoBehaviour
     private void PlayAllPanelBounceAnimations()
     {
         int index = 0;
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             PlayPanelBounceWithDelay(panel, index);
             index++;
@@ -557,7 +562,8 @@ public class GroupRevealManager : MonoBehaviour
 
     private void PlayPanelBounceWithDelay(GroupPanelUI panel, int panelIndex)
     {
-        if (panel == null) return;
+        if (panel == null) 
+            return;
 
         float delay = CalculateBounceDelay(panelIndex);
         DOVirtual.DelayedCall(delay, () => TriggerPanelBounce(panel));
@@ -724,7 +730,7 @@ public class GroupRevealManager : MonoBehaviour
 
     private void ClearAllPanels()
     {
-        foreach (var panel in groupPanels.Values)
+        foreach (GroupPanelUI panel in groupPanels.Values)
         {
             panel.ClearStudents();
         }
@@ -773,15 +779,17 @@ public class GroupRevealManager : MonoBehaviour
     private void CreateFireworkAtPosition(Vector3 position)
     {
         Transform parent = GetFireworksParent();
-
-        // Instantiate main firework
+        
         GameObject firework = InstantiateFirework(position, parent);
-
-        // Try to match flash scale to firework
+        
         FireworkRandomizer randomizer = firework.GetComponent<FireworkRandomizer>();
-        float scale = randomizer != null ? randomizer.chosenScale : 1f;
+        
+        float scale;
+        if (randomizer != null)
+            scale = randomizer.chosenScale;
+        else
+            scale = 1f;
 
-        // Create the flash using the same scale
         GameObject flash = InstantiateFlash(position, parent);
         flash.transform.localScale = Vector3.one * scale;
 

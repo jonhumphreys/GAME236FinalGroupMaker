@@ -21,8 +21,7 @@ public class SpriteSpinShower : MonoBehaviour
 
     private void Update()
     {
-        // Detect Ctrl + A using the new Input System
-        var keyboard = Keyboard.current;
+        Keyboard keyboard = Keyboard.current;
         if (keyboard == null)
             return;
 
@@ -35,7 +34,6 @@ public class SpriteSpinShower : MonoBehaviour
 
     private void ToggleSprite()
     {
-        // Stop any running animation
         if (currentSequence != null && currentSequence.IsActive())
             currentSequence.Kill();
 
@@ -43,7 +41,6 @@ public class SpriteSpinShower : MonoBehaviour
 
         if (!isVisible)
         {
-            // Show animation: scale up and spin
             currentSequence.Append(spriteTransform.DOScale(Vector3.one, animationDuration).SetEase(Ease.OutBack));
             currentSequence.Join(spriteTransform.DORotate(
                 new Vector3(0, 0, 360f * spinRevolutions),
@@ -53,7 +50,6 @@ public class SpriteSpinShower : MonoBehaviour
         }
         else
         {
-            // Hide animation: scale down and spin the opposite way
             currentSequence.Append(spriteTransform.DOScale(Vector3.zero, animationDuration).SetEase(Ease.InBack));
             currentSequence.Join(spriteTransform.DORotate(
                 new Vector3(0, 0, -360f * spinRevolutions),

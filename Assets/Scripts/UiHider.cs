@@ -5,7 +5,6 @@ public class UiHider : MonoBehaviour
 {
     public CanvasGroup UiCanvasGroup;
     
-    // Update is called once per frame
     void Update()
     {
         if (Keyboard.current.ctrlKey.isPressed && Keyboard.current.hKey.wasPressedThisFrame)

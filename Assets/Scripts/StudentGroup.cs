@@ -20,7 +20,10 @@ public class StudentGroup
         }
     }
 
-    public int StudentCount => GetStudentCount();
+    public int StudentCount
+    {
+        get { return GetStudentCount(); }
+    }
 
     public override string ToString()
     {

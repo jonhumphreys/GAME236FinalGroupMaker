@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem; 
 
 [RequireComponent(typeof(AudioSource))]
-public class ToggleSoundOnCtrlM : MonoBehaviour
+public class SoundToggler : MonoBehaviour
 {
     private AudioSource audioSource;
 
@@ -13,7 +13,7 @@ public class ToggleSoundOnCtrlM : MonoBehaviour
 
     private void Update()
     {
-        var keyboard = Keyboard.current;
+        Keyboard keyboard = Keyboard.current;
         if (keyboard == null)
             return;
         

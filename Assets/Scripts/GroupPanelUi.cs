@@ -9,9 +9,6 @@ public class GroupPanelUI : MonoBehaviour
     [Header("UI Components")]
     public TextMeshProUGUI GroupTitleText;
 
-    [Tooltip("Deprecated by StudentTextSlots; not used by this script")]
-    public TextMeshProUGUI StudentsText;
-
     [Header("Per-Student Slots (size 4)")]
     public TextMeshProUGUI[] StudentTextSlots = new TextMeshProUGUI[4];
 
@@ -37,7 +34,7 @@ public class GroupPanelUI : MonoBehaviour
     private int groupNumber;
     private List<string> studentNames;
     private int totalStudentsInGroup;
-    private GroupRevealManager revealManager;
+    private GroupRevealer revealer;
     private Vector3 originalScale;
 
     private void Awake()
@@ -49,7 +46,7 @@ public class GroupPanelUI : MonoBehaviour
         EnsureSlotsAreValid();
     }
 
-    public void Initialize(int groupNum, int totalStudents, GroupRevealManager manager)
+    public void Initialize(int groupNum, int totalStudents, GroupRevealer manager)
     {
         StoreGroupData(groupNum, totalStudents, manager);
         UpdateGroupTitle();
@@ -124,9 +121,20 @@ public class GroupPanelUI : MonoBehaviour
         AnimateBounce();
     }
 
-    public int GroupNumber => groupNumber;
-    public int StudentCount => studentNames.Count;
-    public List<string> StudentNames => new List<string>(studentNames);
+    public int GroupNumber
+    {
+        get { return groupNumber; }
+    }
+
+    public int StudentCount
+    {
+        get { return studentNames.Count; }
+    }
+
+    public List<string> StudentNames
+    {
+        get { return new List<string>(studentNames); }
+    }
 
     private void InitializeStudentList()
     {
@@ -138,11 +146,11 @@ public class GroupPanelUI : MonoBehaviour
         originalScale = transform.localScale;
     }
 
-    private void StoreGroupData(int groupNum, int totalStudents, GroupRevealManager manager)
+    private void StoreGroupData(int groupNum, int totalStudents, GroupRevealer manager)
     {
         groupNumber = groupNum;
         totalStudentsInGroup = totalStudents;
-        revealManager = manager;
+        revealer = manager;
     }
 
     private void UpdateGroupTitle()
@@ -191,9 +199,9 @@ public class GroupPanelUI : MonoBehaviour
 
     private void OnLogoButtonClicked()
     {
-        if (revealManager != null)
+        if (revealer != null)
         {
-            revealManager.OnShowLogoScreen(groupNumber);
+            revealer.OnShowLogoScreen(groupNumber);
         }
     }
 
@@ -252,9 +260,10 @@ public class GroupPanelUI : MonoBehaviour
     private void ClearAllStudentSlots()
     {
         if (StudentTextSlots == null) return;
-        foreach (var slot in StudentTextSlots)
+        foreach (TextMeshProUGUI slot in StudentTextSlots)
         {
-            if (slot != null) slot.text = "";
+            if (slot != null) 
+                slot.text = "";
         }
     }
 
@@ -277,8 +286,7 @@ public class GroupPanelUI : MonoBehaviour
     {
         if (StudentTextSlots == null || StudentTextSlots.Length != 4)
         {
-            // Ensure array exists with 4 entries to avoid null checks everywhere
-            var newArr = new TextMeshProUGUI[4];
+            TextMeshProUGUI[] newArr = new TextMeshProUGUI[4];
             if (StudentTextSlots != null)
             {
                 for (int i = 0; i < Mathf.Min(StudentTextSlots.Length, 4); i++)
@@ -293,7 +301,7 @@ public class GroupPanelUI : MonoBehaviour
         if (StudentTextSlots == null) return -1;
         for (int i = 0; i < StudentTextSlots.Length; i++)
         {
-            var slot = StudentTextSlots[i];
+            TextMeshProUGUI slot = StudentTextSlots[i];
             if (slot != null && string.IsNullOrEmpty(slot.text))
                 return i;
         }
@@ -302,7 +310,7 @@ public class GroupPanelUI : MonoBehaviour
 
     private void SetSlotText(int index, string value)
     {
-        var slot = GetSlot(index);
+        TextMeshProUGUI slot = GetSlot(index);
         if (slot == null)
         {
             Debug.LogWarning($"Group {groupNumber}: slot {index} is not assigned.");
@@ -313,20 +321,19 @@ public class GroupPanelUI : MonoBehaviour
 
     private TextMeshProUGUI GetSlot(int index)
     {
-        if (StudentTextSlots == null || index < 0 || index >= StudentTextSlots.Length) return null;
+        if (StudentTextSlots == null || index < 0 || index >= StudentTextSlots.Length) 
+            return null;
         return StudentTextSlots[index];
     }
 
     private void AnimateSlot(int index)
     {
-        var slot = GetSlot(index);
+        TextMeshProUGUI slot = GetSlot(index);
         if (slot == null) return;
-
-        // Color flash + scale pop
+        
         Color original = slot.color;
-
-        // Scale pop built from two DOScale calls for widest compatibility
-        var rt = slot.rectTransform;
+        
+        RectTransform rt = slot.rectTransform;
         rt.DOKill();
         slot.DOKill();
 

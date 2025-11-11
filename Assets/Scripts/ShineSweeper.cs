@@ -17,8 +17,7 @@ public class AllIn1_ShineSweep : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Material materialRef;
     private MaterialPropertyBlock mpb;
-
-    // Resolved property names
+    
     private string propProgress;
     private string propAngle;
     private string propWidth;
@@ -34,6 +33,7 @@ public class AllIn1_ShineSweep : MonoBehaviour
         spriteRenderer.GetPropertyBlock(mpb);
         materialRef = spriteRenderer.sharedMaterial;
 
+        // property names keep changing, so try to find them dynamically
         if (materialRef != null)
         {
             propProgress = FirstExisting(new[]
@@ -72,18 +72,18 @@ public class AllIn1_ShineSweep : MonoBehaviour
         if (triggerOnStart)
             TriggerShine();
     }
-
-    // existing no-arg trigger stays forward
+    
     public void TriggerShine()
     {
-        if (running != null) StopCoroutine(running);
+        if (running != null) 
+            StopCoroutine(running);
         running = StartCoroutine(ShineRoutine(false));
     }
-
-    // new: allow caller to choose direction
+    
     public void TriggerShine(bool reverse)
     {
-        if (running != null) StopCoroutine(running);
+        if (running != null) 
+            StopCoroutine(running);
         running = StartCoroutine(ShineRoutine(reverse));
     }
 
@@ -116,8 +116,7 @@ public class AllIn1_ShineSweep : MonoBehaviour
 
         float start = reverse ? forwardEnd : forwardStart;
         float end   = reverse ? forwardStart : forwardEnd;
-
-        // snap to starting side so it begins off-sprite
+        
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat(propProgress, start);
         spriteRenderer.SetPropertyBlock(mpb);
@@ -128,7 +127,7 @@ public class AllIn1_ShineSweep : MonoBehaviour
         while (t < d)
         {
             float u = t / d;
-            float eased = u * u * (3f - 2f * u); // smoothstep
+            float eased = u * u * (3f - 2f * u);
             float value = Mathf.Lerp(start, end, eased);
 
             spriteRenderer.GetPropertyBlock(mpb);
