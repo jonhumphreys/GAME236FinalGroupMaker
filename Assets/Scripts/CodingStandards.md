@@ -14,3 +14,4 @@
 - Always put if/else statements on a new line and surround them with braces
 - Don't use private [SerializeField]s.  Make them public and use the inspector to set them.
 - When converting private SerializedFields to public, make sure to capitalize the first letter of the variable name.
+- Don't use lambda expressions unless absolutely necessary
