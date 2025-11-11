@@ -1,4 +1,3 @@
-// On your prefab, add this helper so each instance randomizes itself.
 using UnityEngine;
 
 public class FireworkRandomizer : MonoBehaviour
@@ -15,6 +14,8 @@ public class FireworkRandomizer : MonoBehaviour
     public float scaleMin = 0.8f;
     public float scaleMax = 1.3f;
 
+    [HideInInspector] public float chosenScale; // store chosen scale
+
     void OnEnable()
     {
         var ps = GetComponent<ParticleSystem>();
@@ -26,7 +27,7 @@ public class FireworkRandomizer : MonoBehaviour
         var shape = ps.shape;
         shape.radius = Random.Range(radiusMin, radiusMax);
 
-        float s = Random.Range(scaleMin, scaleMax);
-        transform.localScale = new Vector3(s, s, s);
+        chosenScale = Random.Range(scaleMin, scaleMax);
+        transform.localScale = new Vector3(chosenScale, chosenScale, chosenScale);
     }
 }

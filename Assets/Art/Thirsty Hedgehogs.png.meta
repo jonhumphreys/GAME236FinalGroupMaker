@@ -3,8 +3,8 @@ guid: 2fde7b4f53c14f54fa8a0fc014cb7412
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8799646125210185590
-    second: HornyHedgehogs_0
+      213: -1992678799639556268
+    second: Thirsty Hedgehogs_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HornyHedgehogs_0
+      name: Thirsty Hedgehogs_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67fab42478f9e1a70800000000000000
-      internalID: 8799646125210185590
+      spriteID: 45f480c70359854e0800000000000000
+      internalID: -1992678799639556268
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      HornyHedgehogs_0: 8799646125210185590
+      Thirsty Hedgehogs_0: -1992678799639556268
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

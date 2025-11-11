@@ -55,6 +55,7 @@ public class GroupRevealManager : MonoBehaviour
     
     [Header("Fireworks Settings")]
     public GameObject FireworksParticlePrefab;
+    public GameObject FlashParticlePrefab;
     public int FireworksCount = 10;
     public float FireworksSpawnDelay = 0.2f;
     public float FireworksMinX = -800f;
@@ -214,7 +215,7 @@ public class GroupRevealManager : MonoBehaviour
 
     private string BuildDataFilePath()
     {
-        return Path.Combine(Application.dataPath, "Data", CsvFileName);
+        return Path.Combine(Application.streamingAssetsPath, "Data", CsvFileName);
     }
 
     private void CalculateMaxStudentsPerGroup()
@@ -754,7 +755,7 @@ public class GroupRevealManager : MonoBehaviour
         return fireworkIndex * FireworksSpawnDelay;
     }
 
-    private void SpawnSingleFirework()
+    public void SpawnSingleFirework()
     {
         Vector3 spawnPosition = GenerateRandomFireworkPosition();
         CreateFireworkAtPosition(spawnPosition);
@@ -772,9 +773,21 @@ public class GroupRevealManager : MonoBehaviour
     private void CreateFireworkAtPosition(Vector3 position)
     {
         Transform parent = GetFireworksParent();
+
+        // Instantiate main firework
         GameObject firework = InstantiateFirework(position, parent);
+
+        // Try to match flash scale to firework
+        FireworkRandomizer randomizer = firework.GetComponent<FireworkRandomizer>();
+        float scale = randomizer != null ? randomizer.chosenScale : 1f;
+
+        // Create the flash using the same scale
+        GameObject flash = InstantiateFlash(position, parent);
+        flash.transform.localScale = Vector3.one * scale;
+
         ScheduleFireworkDestruction(firework);
     }
+
 
     private Transform GetFireworksParent()
     {
@@ -784,6 +797,18 @@ public class GroupRevealManager : MonoBehaviour
     private GameObject InstantiateFirework(Vector3 position, Transform parent)
     {
         GameObject firework = Instantiate(FireworksParticlePrefab, position, Quaternion.identity, parent);
+        
+        if (parent == PanelContainer)
+        {
+            SetFireworkLocalPosition(firework, position);
+        }
+        
+        return firework;
+    }
+    
+    private GameObject InstantiateFlash(Vector3 position, Transform parent)
+    {
+        GameObject firework = Instantiate(FlashParticlePrefab, position, Quaternion.identity, parent);
         
         if (parent == PanelContainer)
         {

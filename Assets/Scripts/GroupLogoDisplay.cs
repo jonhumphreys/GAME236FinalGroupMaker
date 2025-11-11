@@ -2,6 +2,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem; // NEW: new input system
 
 public class GroupLogoDisplay : MonoBehaviour
 {
@@ -48,11 +49,17 @@ public class GroupLogoDisplay : MonoBehaviour
     public Ease  LogoBounceInSettleEase = Ease.OutQuad;
     public Ease  LogoBounceOutUpEase = Ease.OutQuad;
     public Ease  LogoBounceOutDownEase = Ease.InCubic;
-    
+
     [Header("Logo Wiggle After Reveal")]
     public float LogoWiggleAngle = 15f;     // degrees (left/right)
     public float LogoWiggleTime  = 0.12f;   // time per leg
     public Ease  LogoWiggleEase  = Ease.OutSine;
+
+    public AllIn1_ShineSweep AllIn1_ShineSweep;
+
+    [Header("Interaction")]
+    public bool ClickToReveal = true;             // NEW: gate un-pixelate on click
+    public LayerMask LogoRaycastLayer = ~0;       // NEW: optional mask for raycast (default = everything)
 
     private int currentGroupNumber;
     private bool[] hasRevealedLogo;
@@ -67,10 +74,15 @@ public class GroupLogoDisplay : MonoBehaviour
     private RectTransform panelRect;
     private Transform logoTransform;
 
+    // NEW: runtime state
+    private bool waitingForClick = false;
+    private Camera mainCam;
+
     private void Awake()
     {
         panelRect = LogoCanvasGroup != null ? LogoCanvasGroup.GetComponent<RectTransform>() : null;
         logoTransform = LogoImageObject != null ? LogoImageObject.transform : null;
+        mainCam = Camera.main; // NEW
 
         if (LogoCanvasGroup != null)
         {
@@ -78,16 +90,33 @@ public class GroupLogoDisplay : MonoBehaviour
             LogoCanvasGroup.interactable = false;
             LogoCanvasGroup.blocksRaycasts = false;
         }
-        
+
         if (panelRect != null)
         {
             Vector2 pos = panelRect.anchoredPosition;
             float dir = SlideFromRight ? 1f : -1f;
             panelRect.anchoredPosition = pos + new Vector2(SlideDistance * dir, 0);
         }
-        
+
         if (logoTransform != null)
             logoTransform.localScale = Vector3.zero;
+    }
+
+    private void Update()
+    {
+        // NEW: if we’re waiting for a logo click, look for left mouse press and hit-test the logo
+        if (waitingForClick)
+        {
+            var mouse = Mouse.current;
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+            {
+                if (ClickedLogoSprite())
+                {
+                    waitingForClick = false;
+                    StartNewRevealAnimation();
+                }
+            }
+        }
     }
 
     public void Initialize(int totalGroups, GroupRevealManager manager)
@@ -103,28 +132,26 @@ public class GroupLogoDisplay : MonoBehaviour
 
         KillAllTweens();
 
-        // Ensure we have the sprite assigned, but keep the object inactive until after we set pixels
         AssignLogoSprite();
 
-        // Prepare material state BEFORE the logo becomes visible
         bool alreadyRevealed = HasBeenRevealed(groupNumber);
         if (alreadyRevealed)
         {
-            // Fully clear/bright for previously revealed teams
             SetPixelateSizeSafe(512);
             SetBrightnessSafe(0f);
         }
         else
         {
-            // Start heavily pixelated and dark for new reveals
             int startPix = PixelateSizes.Count > 0 ? PixelateSizes[0] : 64;
             SetPixelateSizeSafe(startPix);
             SetBrightnessSafe(0f);
         }
 
-        // Now show the image (no clear frame flash) and reset scale
         ShowLogoImage();
         if (logoTransform != null) logoTransform.localScale = Vector3.zero;
+
+        // Ensure a collider exists for sprite click detection (NEW)
+        EnsureLogoCollider2D();
 
         SlideInPanel(() =>
         {
@@ -132,21 +159,29 @@ public class GroupLogoDisplay : MonoBehaviour
             {
                 if (alreadyRevealed)
                 {
-                    // Skip reveal; maybe add a tiny wiggle + team name
                     DisplayTeamNameFancy();
                 }
                 else
                 {
-                    StartNewRevealAnimation();
+                    if (ClickToReveal)
+                    {
+                        // Wait for user click on the logo before starting reveal (NEW)
+                        waitingForClick = true;
+                    }
+                    else
+                    {
+                        // Old behavior: auto-start reveal
+                        StartNewRevealAnimation();
+                    }
                 }
             });
         });
     }
 
-
     public void HideLogoScreen()
     {
         if (revealSeq != null) { revealSeq.Kill(); revealSeq = null; }
+        waitingForClick = false; // NEW: cancel waiting state
 
         PlayLogoBounceOut(() =>
         {
@@ -192,7 +227,9 @@ public class GroupLogoDisplay : MonoBehaviour
     private void ShowLogoImage()
     {
         if (LogoImageObject != null)
+        {
             LogoImageObject.SetActive(true);
+        }
     }
 
     private void HideLogoImage()
@@ -222,10 +259,9 @@ public class GroupLogoDisplay : MonoBehaviour
         SetPixelateSizeSafe(startPix);
         SetBrightnessSafe(-1f);
 
-        // After pixelation finishes, wiggle the logo, then show team name
         revealSeq = LogoRevealFX.BuildLogoRevealSequence(
             logoRenderer: LogoSpriteRenderer,
-            logoTransform: null,                // keep pop disabled; we do wiggle ourselves
+            logoTransform: null,
             pixelSizes: PixelateSizes,
             stepDelay: RevealStepDelay,
             brightenTime: 0f,
@@ -233,23 +269,19 @@ public class GroupLogoDisplay : MonoBehaviour
         );
     }
 
-
     private void DisplayTeamNameFancy()
     {
-        // Default fallback name
         string teamName = "Unknown Team";
-
         if (LogoSpriteRenderer != null && LogoSpriteRenderer.sprite != null)
-        {
-            // Use the sprite’s asset name as the team name
             teamName = LogoSpriteRenderer.sprite.name;
-        }
 
         if (TeamNameText != null)
             LogoRevealFX.TeamNameReveal(TeamNameText, teamName, typeTime: 0.6f, scrambleUpper: false);
 
         MarkLogoAsRevealed();
         NotifyRevealManager();
+
+        AllIn1_ShineSweep.TriggerShine();
     }
 
     private void MarkLogoAsRevealed()
@@ -257,7 +289,7 @@ public class GroupLogoDisplay : MonoBehaviour
         if (hasRevealedLogo != null)
             hasRevealedLogo[currentGroupNumber - 1] = true;
     }
-    
+
     private void PlayLogoWiggle(System.Action onComplete)
     {
         if (logoTransform == null)
@@ -266,7 +298,6 @@ public class GroupLogoDisplay : MonoBehaviour
             return;
         }
 
-        // start from zero to be deterministic
         logoTransform.DOKill();
         logoTransform.localRotation = Quaternion.identity;
 
@@ -389,5 +420,42 @@ public class GroupLogoDisplay : MonoBehaviour
         logoInSeq = null;
         logoOutSeq = null;
         slideTween = null;
+    }
+
+    // ---------- NEW Helpers for click-to-reveal ----------
+
+    private void EnsureLogoCollider2D()
+    {
+        if (LogoSpriteRenderer == null) return;
+
+        // Try any Collider2D on the same object
+        var col = LogoSpriteRenderer.GetComponent<Collider2D>();
+        if (col == null)
+        {
+            // Add a BoxCollider2D sized to the sprite’s bounds (good default)
+            var box = LogoSpriteRenderer.gameObject.AddComponent<BoxCollider2D>();
+            // Auto-size based on sprite bounds in local space
+            if (LogoSpriteRenderer.sprite != null)
+            {
+                var b = LogoSpriteRenderer.sprite.bounds;
+                box.offset = b.center;
+                box.size = b.size;
+            }
+        }
+    }
+
+    private bool ClickedLogoSprite()
+    {
+        if (LogoSpriteRenderer == null || mainCam == null) return false;
+
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Vector3 worldPos = mainCam.ScreenToWorldPoint(screenPos);
+        Vector2 world2D = new Vector2(worldPos.x, worldPos.y);
+
+        // Raycast at mouse position; requires Collider2D on the logo
+        RaycastHit2D hit = Physics2D.Raycast(world2D, Vector2.zero, 0f, LogoRaycastLayer);
+        if (hit.collider == null) return false;
+
+        return hit.collider.gameObject == LogoSpriteRenderer.gameObject;
     }
 }
